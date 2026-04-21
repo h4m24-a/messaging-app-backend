@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model users {
+  id                                        Int            @id @default(autoincrement())
+  username                                  String         @unique @db.VarChar(50)
+  password                                  String
+  profile_image                             String?
+  bio                                       String?
+  created_at                                DateTime?      @default(now()) @db.Timestamp(6)
+  refreshtoken                              String?
+  conversationsAsUser1                      conversation[] @relation("User1Conversation") // “all conversations where this user is user1”
+  conversationsAsUser2                      conversation[] @relation("User2Conversation") // “all conversations where this user is user2”
+  messages                                  messages[]
+}
+
+
+
+
+model conversation {
+  id                                 Int        @id @default(autoincrement())
+  user1_id                           Int
+  user2_id                           Int
+  user1 users @relation("User1Conversation", fields: [user1_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user1")  // id of user1 lineked to users model
+  user2 users @relation("User2Conversation", fields: [user2_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user2") // id of users2 linked to users model
+  created_at                         DateTime?  @default(now()) @db.Timestamp(6)
+  messages                           messages[]
+
+  @@unique([user1_id, user2_id], map: "unique_user_pair")
+}
+
+
+
+model messages {
+  id                Int               @id @default(autoincrement())
+  text              String?
+  conversation_id   Int
+  sender_id         Int
+  seen              Boolean?          @default(false)
+  created_at        DateTime?         @default(now()) @db.Timestamp(6)
+  conversation      conversation?     @relation(fields: [conversation_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_conversation")  // conversation id as FK
+  users             users?            @relation(fields: [sender_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sender")  // user id as FK
+}
+
+
+
+
+/*
+sorting ids
+
+const [user1_id, user2_id] =
+  userA < userB ? [userA, userB] : [userB, userA]; 
+  so if the condition is true, assign userA to user1_id, and b to 2, if not assign userb to user1_id and a to 2
+
+  user1_id should be < than user2_id
+
+*/
