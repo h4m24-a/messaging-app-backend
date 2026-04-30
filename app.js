@@ -14,7 +14,7 @@ const app = express();
 // Routes
 const indexRouter = require("./routes/index")
 const authRouter = require("./auth/authRoutes")
-
+const userRouter = require('./routes/userRouter')
 
 // Serve static files
 app.use(express.static('public'))   // 'public' is my static folder.
@@ -51,8 +51,8 @@ app.use('/api/auth', authRouter);
 
 
 // Protected routes (requires valid JWT)
-app.use('/', indexRouter, jwtAuthentication) // mounts indexRouter at the root of application. All routes defined in indexRouter will be relative to this path.
-
+app.use('/', jwtAuthentication, indexRouter) // mounts indexRouter at the root of application. All routes defined in indexRouter will be relative to this path.
+app.use('/user', jwtAuthentication, userRouter)
 
 
 
