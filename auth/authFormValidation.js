@@ -9,6 +9,7 @@ const validateUserSignUp = [
   .matches(/^[a-zA-Z0-9_]+$/) //  only alphanumeric characters and underscores
   .withMessage('Username must contain only letters, numbers and underscores')
   .escape()
+  .notEmpty()
   ,
 
 
