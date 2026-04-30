@@ -86,28 +86,8 @@ async function logInUserPost(req, res) {
 };
 
 
-// GET - User Profile
-async function getUserProfile(req, res) {
-  try {
-    const { id, username } = req.user;    // destrucure to retrieve id, role, username from req.user object
-    
-    if (!req.user) {
-      return res.status(401).json({ message: "You are not authorized" });
-    }
-
-    res.json({
-      message: `${username}'s Profile!`,
-      username, // Data from jwt payload
-      id,
-    });
-
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching profile" });
-  }  
-}
 
 module.exports = {
   signUpPost,
   logInUserPost,
-  getUserProfile
 }
