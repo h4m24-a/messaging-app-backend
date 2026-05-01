@@ -26,8 +26,8 @@ router.put('/conversations/:conversationId/messages/:messageId');
 router.delete('/conversations/:conversationId/messages/:messageId');
 
 
-// Mark messages as read
-router.patch('/conversations/:conversationId/read')
+// Mark messages as seen
+router.patch('/conversations/:conversationId/messages/seen')
 
 
 module.exports = router;
