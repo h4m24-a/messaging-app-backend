@@ -42,11 +42,17 @@ async function getAllConversations(userId) {
 
 
 // View a single conversation 
-async function getSingleConversation(conversationId) {
+async function getSingleConversation(conversationId, userId) {
   try {
     const conversation = await prisma.conversation.findUnique({
-      where: {
-        id: conversationId
+        where: {
+        conversationId: conversationId,
+        conversation: {                   // conversation - enforce that the requesting user belongs to that conversation
+          OR: [
+            { user1Id: userId },
+            { user2Id: userId }
+          ]
+        }
       },
       include: {
         messages: {
@@ -71,7 +77,7 @@ async function getSingleConversation(conversationId) {
 
 
 
-
+// View all messages in a conversation
 async function getMessagesInConversation(conversationId, userId) {
   try {
     const messages = await prisma.messages.findMany({
@@ -146,7 +152,7 @@ async function createMessage(text, conversationId, userId) {
 // Update a message
 async function updateMessage(updatedText, userId, messageId) {
   try {
-    const updatedMessage =  await prisma.messages.update({
+    const updatedMessage =  await prisma.messages.updateMany({
       where: {
         id: messageId,
         senderId: userId
@@ -167,7 +173,7 @@ async function updateMessage(updatedText, userId, messageId) {
 // Delete a message
 async function deleteMessage(messageId, userId) {
   try {
-    await prisma.messages.delete({
+    await prisma.messages.deleteMany({
       where: {
         id: messageId,
         senderId: userId
@@ -180,6 +186,28 @@ async function deleteMessage(messageId, userId) {
 }
 
 
+
+// Toggle - Mark message as read
+async function toggleMarkSeen(conversationId, userId) {
+  try {
+    const seenMessageStatus = await prisma.messages.updateMany({
+      where: {
+        conversationId: conversationId,
+        sender: { NOT: userId },  // only messages sent by the other person
+        seen: false
+      },
+      data: {
+        seen: true  // set to true 
+      }
+    })
+
+    return seenMessageStatus
+    
+  } catch (error) {
+    console.error('Error deleting message - DB', error);
+    throw error
+  }
+}
 
 
 //! Profile
@@ -372,7 +400,9 @@ module.exports = {
   createMessage,
   updateMessage,
   deleteMessage,
+  toggleMarkSeen,
   getProfileOfUser,
+  createProfile,
   updateProfile,
 
   insertUser,
