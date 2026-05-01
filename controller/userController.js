@@ -4,11 +4,12 @@ const db = require('../prisma/queries')
 // GET - User 
 async function getUser(req, res) {
   try {
-    const { id, username } = req.user;    // destrucure to retrieve id, username from req.user object
-    
+
     if (!req.user) {
       return res.status(401).json({ message: "You are not authorized" });
     }
+    const { id, username } = req.user;    // destrucure to retrieve id, username from req.user object
+    
 
     res.json({
       message: `${username}'!`,
@@ -26,11 +27,13 @@ async function getUser(req, res) {
 // GET /profile  - view user profile
 async function getUserProfile(req, res) {
   try {
-    const userId = req.user.id; //  retrieve id  from req.user object
 
     if (!req.user) {
-      return res.status(401).json({ message: 'You are not authorzied' })
-    };
+      return res.status(401).json({ message: "You are not authorized" });
+    }
+
+    const { id } = req.user;
+  
 
 
 
@@ -57,12 +60,12 @@ async function getUserProfile(req, res) {
 // Create profile
 async function createProfile(req, res) {
   try {
-    
-    const userId = req.user.id; //  retrieve id  from req.user object
 
     if (!req.user) {
-      return res.status(401).json({ message: 'You are not authorzied' })
-    };
+      return res.status(401).json({ message: "You are not authorized" });
+    }
+
+    const { id } = req.user;
 
     const { bio, profileImage } = req.body;
 
@@ -92,12 +95,12 @@ async function createProfile(req, res) {
 // Update profile - add profile image or bio
 async function updateProfile(req, res) {
   try {
-
-    const userId = req.user.id; //  retrieve id  from req.user object
-
+    
     if (!req.user) {
       return res.status(401).json({ message: 'You are not authorzied' })
     };
+    
+    const userId = req.user.id; //  retrieve id  from req.user object
 
     const { updatedBio, updatedProfileImage } = req.body
 
