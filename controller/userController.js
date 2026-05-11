@@ -67,7 +67,8 @@ async function createProfile(req, res) {
 
     const { id } = req.user;
 
-    const { bio, profileImage } = req.body;
+    const { bio } = req.body;
+    const profileImage = req.file ? req.file.location :  '/images/default.png';  // Use default image if no file is uploaded.   req.file.location for s3, req.file.path for local
 
     const profile = await db.createProfile(userId, bio, profileImage)
 
@@ -102,9 +103,12 @@ async function updateProfile(req, res) {
     
     const userId = req.user.id; //  retrieve id  from req.user object
 
-    const { updatedBio, updatedProfileImage } = req.body
+    const updatedBio = req.body.updatedBio
+    const image = req.body.profileImage
+    
+    const profileImage = req.file ? req.file.location : image;  // Only update image if a new one is uploaded
 
-    const updatedProfile = await db.updateProfile(userId, updatedBio, updatedProfileImage);
+    const updatedProfile = await db.updateProfile(userId, updatedBio, profileImage);
 
     res.json({
       message: 'Updated profile successful',
