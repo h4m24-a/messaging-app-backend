@@ -2,6 +2,29 @@ const db = require('../prisma/queries')
 const { validationResult } = require("express-validator");
 
 
+
+// POST- Create conversation between two users if it doesn't exist
+async function createConversation(req, res) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "You are not authorized" });
+    }
+
+    const userA = req.user.id;
+    const userB = parseInt(req.body.userBId);
+
+    const conversation = await db.getOrCreateConversation(userA, userB)
+
+    res.json({
+      conversation
+    })
+    
+  } catch (error) {
+    console.error('Error fetching or creating conversations', error);
+    res.status(500).json({ error: "Error fetching or creating conversations" });
+  }
+}
+
 // GET - View all conversations for authenticated user
 async function viewAllConversations(req, res) {
   try {
@@ -10,7 +33,7 @@ async function viewAllConversations(req, res) {
       return res.status(401).json({ message: "You are not authorized" });
     }
 
-     const userId = req.user.id;
+    const userId = req.user.id;
 
     const conversations = await db.getAllConversations(userId);
 
@@ -239,12 +262,46 @@ async function markMessageAsSeen(req, res) {
 }
 
 
+// GET - Return all users for messaging
+async function getAllUsers(req, res) {
+  try {
+    
+    if (!req.user) {
+      return res.status(401).json({ message: "You are not authorized" });
+    }
+
+    const userId = req.user.id
+
+    const users = await db.getAllUsers(userId)
+
+    
+    if (!users || users.length === 0) {
+      return res.status(200).json({
+        users: [],
+        message: "No users found",
+      });
+    }
+
+    // Success
+    res.json({
+      users,
+      message: 'Successfully returned users'
+    })
+    
+  } catch (error) {
+    console.error('Error returning users', error);
+    res.status(500).json({ error: "Error returning users" });
+  }
+}
+
 module.exports = {
+  createConversation,
   viewAllConversations,
   getSingleConversation,
   getMessagesInConversation,
   sendMessage,
   updateMessage,
   deleteMessage,
-  markMessageAsSeen
+  markMessageAsSeen,
+  getAllUsers
 }
