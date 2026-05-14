@@ -5,7 +5,7 @@ const prisma = new PrismaClient();    // creates an instance of PrismaClient, Th
 
 
 //! Conversation & Messages
-// View all converations and one message -  for home page
+// View all conversations and one message -  for home page
 async function getAllConversations(userId) {
   try {
     const conversations =  await prisma.conversation.findMany( {
@@ -44,9 +44,9 @@ async function getAllConversations(userId) {
 // View a single conversation 
 async function getSingleConversation(conversationId, userId) {
   try {
-    const conversation = await prisma.conversation.findUnique({
+    const conversation = await prisma.conversation.findFirst({
         where: {
-        conversationId: conversationId,
+        id: conversationId,
         conversation: {                   // conversation - enforce that the requesting user belongs to that conversation
           OR: [
             { user1Id: userId },
@@ -77,7 +77,7 @@ async function getSingleConversation(conversationId, userId) {
 
 
 
-// View all messages in a conversation
+// View all messages in a conversation for a user
 async function getMessagesInConversation(conversationId, userId) {
   try {
     const messages = await prisma.messages.findMany({
@@ -101,6 +101,67 @@ async function getMessagesInConversation(conversationId, userId) {
     return messages;
   } catch (error) {
     console.error("Error fetching messages", error);
+    throw error;
+  }
+}
+
+
+// Check if convo exists, if not create a conversation
+async function getOrCreateConversation(userA, userB) {
+  try {
+    // Normalize order. User1 will be the smallest, user2 would be the biggest
+    const user1Id = Math.min(userA, userB);
+    const user2Id = Math.max(userA, userB);
+
+
+    
+    // First check if it already exists
+    const existingConversation = await prisma.conversation.findFirst({
+      where: {
+        user1Id,
+        user2Id,
+      },
+    });
+
+    if (existingConversation) {
+      return existingConversation
+    }
+    
+
+
+    // If not, create it
+      const conversation = await prisma.conversation.create({
+        data: {
+          user1Id,
+          user2Id,
+        },
+      });
+
+    return conversation;
+  } catch (error) {
+    console.error("Error getting/creating conversation", error);
+    throw error;
+  }
+}
+
+
+
+// Get a specific conversation using conversationId and userId
+async function getConversationByIdForUser(conversationId, userId) {
+  try {
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+        OR: [
+          { user1Id: userId },
+          { user2Id: userId }
+        ]
+      }
+    });
+
+    return conversation;
+  } catch (error) {
+    console.error("Error fetching conversation", error);
     throw error;
   }
 }
@@ -209,6 +270,30 @@ async function toggleMarkSeen(conversationId, userId) {
   }
 }
 
+
+
+// Return all users for selecting who to message excluding logged in user
+async function getAllUsers(userId) {
+  try {
+    const users = await prisma.users.findMany({
+      where: {
+        id: {
+          not: userId
+        }
+      },
+      select: {
+        id: true,
+        username: true,
+        profile_image: true,
+        created_at: true
+      }
+    })
+    
+  } catch (error) {
+    console.error('Error fetching all users', error);
+    throw error
+  }
+}
 
 //! Profile
 
@@ -396,6 +481,9 @@ module.exports = {
   getAllConversations,
   getSingleConversation,
   getMessagesInConversation,
+  getOrCreateConversation,
+  getConversationByIdForUser,
+
   getSingleMessage,
   createMessage,
   updateMessage,
@@ -404,6 +492,8 @@ module.exports = {
   getProfileOfUser,
   createProfile,
   updateProfile,
+
+  getAllUsers,
 
   insertUser,
   findUserByUsername,

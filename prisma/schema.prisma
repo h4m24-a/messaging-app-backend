@@ -24,13 +24,13 @@ model Users {
 
 
 model Conversation {
-  id                                 Int        @id @default(autoincrement())
+  id                                Int        @id @default(autoincrement())
   user1Id                           Int
   user2Id                           Int
   user1 Users @relation("User1Conversation", fields: [user1Id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user1")  // id of user1 lineked to users model
   user2 Users @relation("User2Conversation", fields: [user2Id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user2") // id of users2 linked to users model
-  created_at                         DateTime  @default(now()) @db.Timestamp(6)
-  messages                           Messages[]
+  created_at                        DateTime  @default(now()) @db.Timestamp(6)
+  messages                          Messages[]
 
   @@unique([user1Id, user2Id], map: "unique_user_pair")
 }
@@ -57,7 +57,7 @@ sorting ids
 
 const [user1Id, user2Id] =
   userA < userB ? [userA, userB] : [userB, userA]; 
-  so if the condition is true, assign userA to user1_id, and b to 2, if not assign userb to user1_id and a to 2
+  so if the condition is true, assign userA to user1_id, and userB to user2_id, if not assign userb to user1_id and userA to userid_2
 
   user1_id should be < than user2Id
 
