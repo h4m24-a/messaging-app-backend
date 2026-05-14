@@ -94,7 +94,13 @@ async function getMessagesInConversation(conversationId, userId) {
         created_at: "asc"
       },
       include: {
-        sender: true
+        sender: {
+          select: {
+            id: true,
+            username: true,
+            profile_image: true
+          }
+        }
       }
     });
 
