@@ -1,7 +1,7 @@
 const db = require('../prisma/queries')
 
 
-// GET - User 
+// GET - data about logged in user
 async function getUser(req, res) {
   try {
 
@@ -120,8 +120,9 @@ async function updateProfile(req, res) {
     console.error('Error updating profile', error)
     res.status(500).json({ error: "Error updating User" });
   }
-
 }
+
+
 
 
 module.exports = {
