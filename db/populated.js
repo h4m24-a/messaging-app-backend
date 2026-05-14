@@ -7,24 +7,6 @@ const { Client } = require("pg"); //  used to interact with the PostgreSQL datab
 // SQL is a string containing SQL command
 const SQL = `
 
-    CREATE TABLE IF NOT EXISTS messages (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    text TEXT,
-    conversation_id INTEGER,
-    sender_id INTEGER,
-    seen BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_conversation
-    FOREIGN KEY (conversation_id)
-    REFERENCES conversation(id)
-    ON DELETE CASCADE,
-
-    CONSTRAINT fk_sender
-    FOREIGN KEY (sender_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE
-  );
 `
 
 
@@ -45,28 +27,6 @@ main();
 
 
 /*
-- User Table
-id,
-username,
-password,
-profile image,
-bio
-created_at
-
-
-- Conversation Table- user1 and user2 just represents the two users, they still have unique ids.
-id
-user1 id  (user.id as FK)
-user2 id  (user.id as FK)
-created_at
-
-- Messages Table
-id
-conversation_id (conversation.id as FK)
-text
-seen
-sender_id  (user.id as FK)
-created_at
 
 
 CREATE TABLE IF NOT EXISTS users (
@@ -99,6 +59,10 @@ CREATE TABLE IF NOT EXISTS users (
     );
 
 
+
+
+
+    
  CREATE TABLE IF NOT EXISTS messages (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     text TEXT,
