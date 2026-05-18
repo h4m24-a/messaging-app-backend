@@ -14,7 +14,7 @@ model Users {
   profile_image                             String?
   bio                                       String?
   created_at                                DateTime     @default(now()) @db.Timestamp(6)
-  refreshtoken                              String?
+  refreshToken                              String?
   conversationsAsUser1                      Conversation[] @relation("User1Conversation") // “all conversations where this user is user1”
   conversationsAsUser2                      Conversation[] @relation("User2Conversation") // “all conversations where this user is user2”
   messages                                  Messages[]

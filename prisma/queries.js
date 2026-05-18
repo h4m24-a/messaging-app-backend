@@ -16,6 +16,22 @@ async function getAllConversations(userId) {
         ]
       },
       include: {
+        user1: {
+          select: {
+            id: true,
+            username: true,
+            profile_image: true
+          }
+
+        },
+        user2: {
+          select: {
+            id: true,
+            profile_image: true,
+            username: true
+          }
+
+        },
         messages: {
           orderBy: {
             created_at: 'desc',
@@ -47,12 +63,10 @@ async function getSingleConversation(conversationId, userId) {
     const conversation = await prisma.conversation.findFirst({
         where: {
         id: conversationId,
-        conversation: {                   // conversation - enforce that the requesting user belongs to that conversation
-          OR: [
-            { user1Id: userId },
-            { user2Id: userId }
-          ]
-        }
+        OR: [
+          { user1Id: userId },
+          { user2Id: userId }
+        ]
       },
       include: {
         messages: {
@@ -183,6 +197,8 @@ async function getSingleMessage(messageId, userId) {
         senderId: userId
       }
     })
+
+    return message;
     
   } catch (error) {
     console.error('Error fetching message', error);
@@ -228,6 +244,8 @@ async function updateMessage(updatedText, userId, messageId) {
         text: updatedText
       }
     })
+
+    return updatedMessage
   } catch (error) {
     console.error('Error updating message', error);
     throw error
@@ -260,7 +278,7 @@ async function toggleMarkSeen(conversationId, userId) {
     const seenMessageStatus = await prisma.messages.updateMany({
       where: {
         conversationId: conversationId,
-        sender: { NOT: userId },  // only messages sent by the other person
+        senderId: { NOT: userId },  // only messages sent by the other person
         seen: false
       },
       data: {
@@ -294,6 +312,8 @@ async function getAllUsers(userId) {
         created_at: true
       }
     })
+
+    return users;
     
   } catch (error) {
     console.error('Error fetching all users', error);
@@ -316,7 +336,9 @@ async function getProfileOfUser(userId) {
         profile_image: true,
         bio: true
       }
-    })
+    });
+
+    return profile
   } catch (error) {
     console.error('Error fetching user profile', error);
     throw error
@@ -327,18 +349,22 @@ async function getProfileOfUser(userId) {
 // create profile - add profile image & bio
 async function createProfile(userId, profileImage, bio) {
   try {
-    const profile = await prisma.users.create({
+    const profile = await prisma.users.update({
+      where: {
+        id: userId
+      },
       data: {
-        id: userId,
-        profile_image: profileImage,      // use .optional for both input forms
+        profile_image: profileImage,
         bio: bio
       }
-    })
-    
+    });
+
+    return profile;
+
   } catch (error) {
     console.error('Error creating user profile', error);
-    throw error
-  } 
+    throw error;
+  }
 }
 
 
@@ -379,7 +405,7 @@ async function insertUser(username, password) {
       }
     })
   } catch (error) {
-    console.eroror('Error creating user', error);
+    console.error('Error creating user', error);
     throw error
   }
   
@@ -392,7 +418,7 @@ async function findUserByUsername(username) {
    const user = await prisma.users.findUnique({
       where: {
         username
-      }
+      },
     });
     return user
   } catch (error) {
