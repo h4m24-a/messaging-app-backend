@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';  // This imports the PrismaClient class from the @prisma/client package.
+const { PrismaClient } = require('@prisma/client');// This imports the PrismaClient class from the @prisma/client package.
 
 const prisma = new PrismaClient();    // creates an instance of PrismaClient, The prisma object acts as your connection to the database and provides methods to interact with different tables
 
