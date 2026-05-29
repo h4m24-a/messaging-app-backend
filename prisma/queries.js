@@ -159,7 +159,7 @@ async function getOrCreateConversation(userA, userB) {
 
     return conversation;
   } catch (error) {
-    console.error("Error getting/creating conversation", error);
+    console.error("Error creating conversation", error);
     throw error;
   }
 }
@@ -193,10 +193,15 @@ async function getSingleMessage(messageId, userId) {
   try {
     const message = await prisma.messages.findFirst({
       where: {
-        id: messageId,
-        senderId: userId
+      id: messageId,
+      conversation: {
+        OR: [
+          { user1Id: userId },
+          { user2Id: userId }
+        ]
       }
-    })
+    }
+  })
 
     return message;
     
