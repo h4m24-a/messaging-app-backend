@@ -128,15 +128,23 @@ async function sendMessage(req, res) {
     const userId = req.user.id;
     const conversationId = parseInt(req.params.conversationId);
     const { text } = req.body
+    
 
-    const message = await db.createMessage(text, conversationId, userId)
+    const userIncluded = await db.getConversationByIdForUser(conversationId, userId)
 
-    if (!message) {
+    if (!userIncluded) {
+      return res.status(403).json({ error: 'User not in conversation'})
+    }
+
+
+    const userMessage = await db.createMessage(text, conversationId, userId)
+
+    if (!userMessage) {
       return res.json({ message: 'Error sending message - DB' });
     }
 
     res.json({
-      message,
+      userMessage,
       message: 'Successfully sent message'
     })
     
