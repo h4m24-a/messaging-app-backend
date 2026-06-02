@@ -52,7 +52,7 @@ app.use('/api/auth', authRouter);
 
 // Protected routes (requires valid JWT)
 app.use('/', jwtAuthentication, indexRouter) // mounts indexRouter at the root of application. All routes defined in indexRouter will be relative to this path.
-app.use('/user', jwtAuthentication, userRouter)
+app.use('/api/auth/user/', jwtAuthentication, userRouter)
 
 
 
