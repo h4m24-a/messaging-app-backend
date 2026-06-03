@@ -20,14 +20,7 @@ const s3Client = new S3Client({
   },
 });
 
-// AWS Configuration
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,  
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, 
-  },
-});
+
 
 const upload = multer({
   storage: multerS3({
@@ -58,7 +51,7 @@ const upload = multer({
 
 
 // GET /user
-router.get('/', getUser);    // Get data about user: id, username
+router.get('/userData', getUser);    // Get data about user: id, username
 
 
 // GET /profile     - View User profile
