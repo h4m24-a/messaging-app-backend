@@ -1,8 +1,19 @@
-const { PrismaClient } = require('@prisma/client');// This imports the PrismaClient class from the @prisma/client package.
+const { PrismaClient } = require('@prisma/client');
+const { Pool } = require('pg');
+const { PrismaPg } = require('@prisma/adapter-pg');
 
-const prisma = new PrismaClient();    // creates an instance of PrismaClient, The prisma object acts as your connection to the database and provides methods to interact with different tables
+// PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
+// Prisma adapter
+const adapter = new PrismaPg(pool);
 
+// Prisma client WITH adapter
+const prisma = new PrismaClient({
+  adapter,
+});
 
 //! Conversation & Messages
 // View all conversations and one message -  for home page
