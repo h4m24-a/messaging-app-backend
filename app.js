@@ -1,6 +1,8 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+const passport = require('passport');
+require('./auth/passportJwtConfig');
 const session = require("express-session");
 const cookieParser = require('cookie-parser');
 const errorMiddleware = require("./middleware/error")
@@ -10,6 +12,9 @@ const jwtAuthentication = require('./middleware/jwtAuthentication')
 
 const app = express();
 
+
+// Initialize Passport
+app.use(passport.initialize());
 
 // Routes
 const indexRouter = require("./routes/index")
@@ -35,8 +40,6 @@ app.use(cors( {
 
 
 
-// Initialize Passport
-app.use(passport.initialize());
 
 
 // Session set up
@@ -52,7 +55,7 @@ app.use('/api/auth', authRouter);
 
 // Protected routes (requires valid JWT)
 app.use('/', jwtAuthentication, indexRouter) // mounts indexRouter at the root of application. All routes defined in indexRouter will be relative to this path.
-app.use('/api/auth/user/', jwtAuthentication, userRouter)
+app.use('/api/auth/', jwtAuthentication, userRouter)
 
 
 
