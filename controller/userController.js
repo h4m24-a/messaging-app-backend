@@ -10,10 +10,14 @@ async function getUser(req, res) {
     }
     const { id, username } = req.user;    // destrucure to retrieve id, username from req.user object
     
+    const data = await db.getProfileOfUser(id)
+
+    const profile_image = data.profile_image
 
     res.json({
       message: `${username}'!`,
-      username, // Data from jwt payload
+      username, // Data from jwt payload,
+      profile_image,
       id,
     });
 
