@@ -50,9 +50,13 @@ async function getAllConversations(userId) {
           take: 1,                     // displays the latest message
           select: {
             text: true,
-            sender: true,
             created_at: true,
-            seen: true                // boolean value depending on value
+            seen: true,                // boolean value depending on value
+            sender: {
+              select: {
+                username: true
+              },
+            },
           },
         }
       }
