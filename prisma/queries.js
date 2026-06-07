@@ -107,35 +107,52 @@ async function getSingleConversation(conversationId, userId) {
 
 
 // View all messages in a conversation for a user
-async function getMessagesInConversation(conversationId, userId) {
+async function getMessagesInConversation(id, userId) {
   try {
-    const messages = await prisma.messages.findMany({
+    const conversation = await prisma.conversation.findFirst({
+      
       where: {
-        conversationId: conversationId,
-        conversation: {                   // conversation - enforce that the requesting user belongs to that conversation
-          OR: [
-            { user1Id: userId },
-            { user2Id: userId }
-          ]
-        }
-      },
-      orderBy: {
-        created_at: "asc"
+        id: id,
+        OR: [
+          { user1Id: userId },
+          { user2Id: userId }
+        ]
       },
       include: {
-        sender: {
+        messages: {
+          orderBy: {
+            created_at: "asc"
+          },
+          include: {
+            sender: {
+              select: {
+                id: true,
+                username: true,
+                profile_image: true
+              }
+            }
+          }
+        },
+        user1: {
           select: {
             id: true,
             username: true,
             profile_image: true
           }
+        },
+        user2: {
+          select: {
+            id: true,
+            username: true,
+            profile_image: true
+          },
         }
       }
     });
 
-    return messages;
+    return conversation; 
   } catch (error) {
-    console.error("Error fetching messages", error);
+    console.error("Prisma Error fetching messages:", error);
     throw error;
   }
 }
