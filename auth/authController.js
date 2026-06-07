@@ -56,7 +56,7 @@ async function logInUserPost(req, res) {
 
 
     const match = await bcrypt.compare(password, user.password) // Compares the result to the stored hash & verifies passwords with a temporary hash.
-    if (!match) return res.status(401).json({ message: 'Incorrect password' })    // If passwords don't match!
+    if (!match) return res.status(401).json({ error: 'Incorrect password' })    // If passwords don't match!
 
      const payload = {
       id: user.id,
