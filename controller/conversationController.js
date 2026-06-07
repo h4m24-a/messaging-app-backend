@@ -96,16 +96,16 @@ async function getMessagesInConversation(req, res) {
 
     const userId = req.user.id;
 
-    const conversationId = parseInt(req.params.conversationId) 
+    const id = parseInt(req.params.conversationId) 
 
-    const messages = await db.getMessagesInConversation(conversationId, userId)
+    const conversation = await db.getMessagesInConversation(id, userId)
 
-    if (!messages) {
+    if (!conversation) {
       return res.json({ message: 'No messages found, DB' });
     }
 
     res.json({
-      messages,
+      conversation,
       message: 'Successfully fetched messages'
     })
     
