@@ -65,7 +65,7 @@ async function getSingleConversation(req, res) {
 
     const conversationId = parseInt(req.params.conversationId) 
 
-    const conversation =  await db.getSingleConversation(conversationId, id)
+    const conversation =  await db.getSingleConversation(conversationId, userId)
 
      if (!conversation) {
       return res.json({ message: 'No conversation found, DB' });
