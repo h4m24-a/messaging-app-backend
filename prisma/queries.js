@@ -73,11 +73,11 @@ async function getAllConversations(userId) {
 
 
 // View a single conversation 
-async function getSingleConversation(conversationId, userId) {
+async function getSingleConversation(id, userId) {
   try {
-    const conversation = await prisma.conversation.findFirst({
+    const conversation = await prisma.conversation.findUnique({
         where: {
-        id: conversationId,
+        id: Number(id),
         OR: [
           { user1Id: userId },
           { user2Id: userId }
@@ -92,8 +92,20 @@ async function getSingleConversation(conversationId, userId) {
             sender: true
           }
         },
-        user1: true,
-        user2: true,
+        user1: {
+          select: {
+            id: true,
+            username: true,
+            profile_image: true
+          }
+        },
+        user2: {
+          select: {
+            id: true,
+            username: true,
+            profile_image: true
+          },
+        }
       }
     })
     return conversation;
