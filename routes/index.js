@@ -10,6 +10,8 @@ router.post('/conversations', createConversation)
 // GET- View all conversations for authenticated user
 router.get('/conversations', viewAllConversations )
 
+// Return all users - contains a create conversation button
+router.get('/conversations/users', getAllUsers)
 
 // GET- a single conversation (metadata)
 router.get('/conversations/:conversationId', getSingleConversation)
@@ -35,7 +37,5 @@ router.delete('/conversations/:conversationId/messages/:messageId', deleteMessag
 router.patch('/conversations/:conversationId/messages/seen', markMessageAsSeen)
 
 
-// Return all users - contains a create conversation button
-router.get('/conversations/users', getAllUsers)
 
 module.exports = router;
