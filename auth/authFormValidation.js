@@ -10,6 +10,7 @@ const validateUserSignUp = [
   .withMessage('Username must contain only letters, numbers and underscores')
   .escape()
   .notEmpty()
+  .toLowerCase()
   ,
 
 
@@ -29,6 +30,7 @@ const validateUserLogIn = [
   .notEmpty()
   .withMessage('Username is required')
   .escape()
+  .toLowerCase()
   ,
 
   // Validate and sanitize password
