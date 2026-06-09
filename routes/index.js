@@ -5,7 +5,7 @@ const { validateMessage, validateUpdatedMessage } = require('../controller/formV
 
 
 // POST - Create conversation  and its controller - Check if conversation exists, if it does, redirect, if not create one
-router.post('/conversations', createConversation)
+router.post('/conversations/create', createConversation)
 
 // GET- View all conversations for authenticated user
 router.get('/conversations', viewAllConversations )

@@ -13,15 +13,26 @@ async function createConversation(req, res) {
     const userA = req.user.id;
     const userB = parseInt(req.body.userBId);
 
+    if (!userB) {
+      return res.status(400).json({ message: "userBId is required" });
+    }
+    
     const conversation = await db.getOrCreateConversation(userA, userB)
 
+    const result = await db.getConversationByIdForUser(conversation.id, user.id)
+
+    if (result) {
+      return res.status(500).json({error: 'Conversation already exists'})
+    }
+
     res.json({
-      conversation
+      conversation,
+      message: conversation ? 'Created conversation': 'Conversation already exists'
     })
     
   } catch (error) {
-    console.error('Error fetching or creating conversations', error);
-    res.status(500).json({ error: "Error fetching or creating conversations" });
+    console.error('Error creating conversations', error);
+    res.status(500).json({ error: "Conversation already exists" });
   }
 }
 
