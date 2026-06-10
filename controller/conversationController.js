@@ -19,7 +19,7 @@ async function createConversation(req, res) {
     
     const conversation = await db.getOrCreateConversation(userA, userB)
 
-    const result = await db.getConversationByIdForUser(conversation.id, user.id)
+    const result = await db.getConversationByIdForUser(conversation.id, userA)
 
     if (result) {
       return res.status(500).json({error: 'Conversation already exists'})
