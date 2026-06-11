@@ -326,8 +326,8 @@ async function toggleMarkSeen(conversationId, userId) {
   try {
     const seenMessageStatus = await prisma.messages.updateMany({
       where: {
-        conversationId: conversationId,
-        senderId: { NOT: userId },  // only messages sent by the other person
+        conversationId,
+        senderId: { not: userId },  // only messages sent by the other person
         seen: false
       },
       data: {
@@ -338,7 +338,7 @@ async function toggleMarkSeen(conversationId, userId) {
     return seenMessageStatus
     
   } catch (error) {
-    console.error('Error deleting message - DB', error);
+    console.error('Error marking message as seen - DB', error);
     throw error
   }
 }

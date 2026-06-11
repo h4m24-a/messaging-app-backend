@@ -251,17 +251,15 @@ async function markMessageAsSeen(req, res) {
 
     const userId = req.user.id
     const conversationId = parseInt(req.params.conversationId, 10);
+    
+    
+    const result = await db.getSingleConversation(conversationId, userId)
 
-    // const messageId = parseInt(req.params.messageId, 10);
+    if (!result.messages || result.messages.length === 0 ) {
+      return res.json({ message: 'There are no messages' })
+    }
 
-
-      // Get messageId using singleMessage query
-    // const messageDB = await db.getSingleMessage(messageId)
-
-    // if (!messageDB) {
-    //   return res.status(404).json({ error: 'Message not found' })
-    // }
-
+  
 
     // Mark message as seen - set to true
     const updatedSeenStatus = await db.toggleMarkSeen(conversationId, userId)
