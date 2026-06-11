@@ -260,11 +260,11 @@ async function getSingleMessage(messageId, userId) {
 
 
 // Send a message
-async function createMessage(text, conversationId, userId) {
+async function createMessage(message, conversationId, userId) {
   try {
     const newMessage = await prisma.messages.create({
       data: {
-        text: text,
+        text: message,
         senderId: userId,
         conversationId: conversationId
 
@@ -282,7 +282,7 @@ async function createMessage(text, conversationId, userId) {
 
 
 // Update a message
-async function updateMessage(updatedText, userId, messageId) {
+async function updateMessage(updatedMessage, userId, messageId) {
   try {
     const updatedMessage =  await prisma.messages.updateMany({
       where: {
@@ -290,7 +290,7 @@ async function updateMessage(updatedText, userId, messageId) {
         senderId: userId
       },
       data: {
-        text: updatedText
+        text: updatedMessage
       }
     })
 

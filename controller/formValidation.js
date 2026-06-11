@@ -34,8 +34,8 @@ const validateMessage = [
   .exists({ checkFalsy: true })
   .withMessage('Message is required')
   .trim()
-  .isLength({ min: 3, max: 100 })
-  .withMessage('Message must be between 3 and 100 characters')
+  .isLength({ min: 1, max: 100 })
+  .withMessage('Message must be between 1 and 100 characters')
   .isString().withMessage('Message must be a string')
   .customSanitizer(value => String(value))
   .escape() // prevents HTML/script injection
@@ -48,8 +48,8 @@ const validateUpdatedMessage = [
   .exists({ checkFalsy: true })
   .withMessage('Message is required')
   .trim()
-  .isLength({ min: 3, max: 100 })
-  .withMessage('Message must be between 3 and 100 characters')
+  .isLength({ min: 1, max: 100 })
+  .withMessage('Message must be between 1 and 100 characters')
   .isString().withMessage('Message must be a string')
   .customSanitizer(value => String(value))
   .escape(), // prevents HTML/script injection

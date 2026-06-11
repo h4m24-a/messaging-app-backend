@@ -138,7 +138,7 @@ async function sendMessage(req, res) {
 
     const userId = req.user.id;
     const conversationId = parseInt(req.params.conversationId);
-    const { text } = req.body
+    const { message } = req.body
     
 
     const userIncluded = await db.getConversationByIdForUser(conversationId, userId)
@@ -148,7 +148,7 @@ async function sendMessage(req, res) {
     }
 
 
-    const userMessage = await db.createMessage(text, conversationId, userId)
+    const userMessage = await db.createMessage(message, conversationId, userId)
 
     if (!userMessage) {
       return res.json({ message: 'Error sending message - DB' });
