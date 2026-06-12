@@ -178,11 +178,12 @@ async function updateMessage(req, res) {
     const userId = req.user.id;
     const conversationId = parseInt(req.params.conversationId, 10);
     const messageId = parseInt(req.params.messageId, 10);
-    const { updatedText } = req.body;
+    const { updatedMessage } = req.body;
 
     const messageDB = await db.getSingleMessage(messageId, userId)
-
+    
     if (!messageDB) {
+      console.log(messageDB)
       res.status(404).json({ error: 'Message not found' })
     }
 
@@ -190,11 +191,11 @@ async function updateMessage(req, res) {
       return res.status(400).json({ error: 'Message does not belong to this conversation' })
     }
 
-    const updatedMessage = await db.updateMessage(updatedText, userId, messageId);
+    const updated = await db.updateMessage(updatedMessage, userId, messageId);
 
     res.json({
       message: 'Successfully updated message',
-      updatedMessage
+      updated
     })
 
   } catch (error) {
