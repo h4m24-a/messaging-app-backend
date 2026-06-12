@@ -284,7 +284,7 @@ async function createMessage(message, conversationId, userId) {
 // Update a message
 async function updateMessage(updatedMessage, userId, messageId) {
   try {
-    const updatedMessage =  await prisma.messages.updateMany({
+    const updated =  await prisma.messages.updateMany({
       where: {
         id: messageId,
         senderId: userId
@@ -294,7 +294,7 @@ async function updateMessage(updatedMessage, userId, messageId) {
       }
     })
 
-    return updatedMessage
+    return updated
   } catch (error) {
     console.error('Error updating message', error);
     throw error
@@ -366,6 +366,23 @@ async function getAllUsers(userId) {
     
   } catch (error) {
     console.error('Error fetching all users', error);
+    throw error
+  }
+}
+
+
+
+// Return count of unseen messages
+async function countUnseen(conversationId, userId) {
+  try {
+    const count = await prisma.messages.count({
+      where: {
+        seen: false
+      }
+    })
+    
+  } catch (error) {
+    console.error('Error counting unseen messages', error);
     throw error
   }
 }
