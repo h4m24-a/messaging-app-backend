@@ -232,7 +232,7 @@ async function deleteMessage(req, res) {
 
     await db.deleteMessage(id, userId);
 
-    res.status(204).json({ message: 'Succesfully deleted message'})
+    res.status(200).json({ message: 'Succesfully deleted message'})
     
   } catch (error) {
     console.error('Error deleting message', error);
