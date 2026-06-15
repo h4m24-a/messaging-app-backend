@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const { Pool } = require('pg');
 const { PrismaPg } = require('@prisma/adapter-pg');
+const defaultProfileImage = process.env.AWS_DEFAULT_PROFILE_PHOTO
 
 // PostgreSQL connection pool
 const pool = new Pool({
@@ -435,7 +436,7 @@ async function createProfile(userId, profileImage, bio) {
 
 
 // Update profile - add profile image & bio
-async function updateProfile(userId, updatedProfileImage, updatedBio) {
+async function updateProfile(userId, updatedBio, updatedProfileImage) {
   try {
     const profile = await prisma.users.update({
       where: {
@@ -467,7 +468,8 @@ async function insertUser(username, password) {
     return await prisma.users.create({
       data: {
         username: username,     // 2nd username represents the username from form, this is dynamic
-        password: password
+        password: password,
+        profile_image: defaultProfileImage
       }
     })
   } catch (error) {
