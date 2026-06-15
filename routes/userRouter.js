@@ -1,11 +1,12 @@
 const express = require('express');
-const router = express.Router()
+const router = express.Router();
 const { getUser, getUserProfile, createProfile, updateProfile } = require('../controller/userController')
 const handleValidationErrors = require('../middleware/handleValidationErrors')
 const { validateProfile, validateUpdatedProfile } = require('../controller/formValidation')
 require('dotenv').config();
 const AWS = require('aws-sdk');
 const multer = require('multer');
+const path = require("path");
 const multerS3 = require('multer-s3');
 const { S3Client } = require('@aws-sdk/client-s3');  // Importing the S3 client
 const { Upload } = require('@aws-sdk/lib-storage'); // For multipart uploads
@@ -63,7 +64,7 @@ router.post('/profile', validateProfile, upload.single('profileImage'), handleVa
 
 
 // PATCH/profile -  Update profile
-router.patch('/profile', validateUpdatedProfile, upload.single('profileImage'), handleValidationErrors, updateProfile)
+router.patch('/profile', validateUpdatedProfile, upload.single('updatedProfileImage'), handleValidationErrors, updateProfile)
 
 module.exports = router;
 
