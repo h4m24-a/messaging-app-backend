@@ -41,7 +41,7 @@ async function getUserProfile(req, res) {
 
 
 
-    const profile = await db.getUserProfile(userId)
+    const profile = await db.getProfileOfUser(id)
 
     if (!profile) {
       return res.json({ message: 'Error viewing profile' })
@@ -108,11 +108,15 @@ async function updateProfile(req, res) {
     const userId = req.user.id; //  retrieve id  from req.user object
 
     const updatedBio = req.body.updatedBio
-    const image = req.body.profileImage
+    const image = req.body.updatedProfileImage
     
-    const profileImage = req.file ? req.file.location : image;  // Only update image if a new one is uploaded
+    const updatedProfileImage = req.file ? req.file.location : image;  // Only update image if a new one is uploaded
 
-    const updatedProfile = await db.updateProfile(userId, updatedBio, profileImage);
+    const updatedProfile = await db.updateProfile(userId, updatedBio, updatedProfileImage);
+
+    if (!updatedProfile) {
+      return res.status(500).json({error: 'Error updating profile'})
+    }
 
     res.json({
       message: 'Updated profile successful',
