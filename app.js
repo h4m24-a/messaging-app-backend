@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));  // This middleware parses this
 
 
 app.use(cors( {
-  origin: ["blog-api-production-0057.up.railway.app", "blog-frontend-production-14e1.up.railway.app"],
+  origin: ["http://localhost:5173", "http://localhost:3000"],
   credentials: true     
 }));  // enables Cross-Origin Resource Sharing for all incoming requests.
 
