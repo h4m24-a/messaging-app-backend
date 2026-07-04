@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config();
+const PORT = process.env.PORT || 3000
 const cors = require("cors");
 const passport = require('passport');
 require('./auth/passportJwtConfig');
@@ -28,18 +29,22 @@ app.use(express.static('public'))   // 'public' is my static folder.
 // Middlewares for cookies
 app.use(cookieParser());
 
+
+
+app.set("trust proxy", 1);
+
+const corsOptions = {
+  origin: "messaging-app-frontend-production.up.railway.app",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
+
 // Body Parser Middleware
 app.use(express.json()); // submit raw json
 app.use(express.urlencoded({ extended: true }));  // This middleware parses this data and makes it available in req.body as a js object. express.urlencoded() is a built-in middleware function in Express that parses incoming requests with URL-encoded payloads. Used when data is submitted from HTML
-
-
-app.use(cors( {
-  origin: ["http://localhost:5173", "http://localhost:3000"],
-  credentials: true     
-}));  // enables Cross-Origin Resource Sharing for all incoming requests.
-
-
-
 
 
 // Session set up
@@ -49,7 +54,7 @@ app.use(cors( {
 // Adding route-handling code to the request handling chain. This will define particular routes for the different parts of the site
 
 // Public (unauthenticated) routes
-app.use('/api/auth', authRouter);
+app.use('/api/', authRouter);
 
 
 
@@ -67,6 +72,6 @@ app.use(notFoundMiddlware);
 app.use(errorMiddleware);
 
 
-app.listen(3000, () => {
-  console.log('Server running on PORT 3000')
+app.listen(PORT, () => {
+  console.log(`Server running on PORT ${PORT}`)
 })
