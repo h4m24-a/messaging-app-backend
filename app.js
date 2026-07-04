@@ -24,8 +24,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// HARD FIX for preflight
-app.options("*", cors());
 
 // Initialize Passport
 app.use(passport.initialize());
