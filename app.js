@@ -16,16 +16,13 @@ const app = express();
 app.set("trust proxy", 1);
 
 const corsOptions = {
-  origin: "messaging-app-frontend-production.up.railway.app",
+  origin: "https://messaging-app-backend-production-b49f.up.railway.app",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"]
 };
 
 app.use(cors(corsOptions));
-
-// HARD FIX for preflight
-app.options("*", cors(corsOptions));
 
 // Initialize Passport
 app.use(passport.initialize());
