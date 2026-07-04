@@ -28,6 +28,7 @@ const validateUserLogIn = [
   body('username')
   .trim()
   .notEmpty()
+  .matches(/^[a-zA-Z0-9_]+$/) //  only alphanumeric characters and underscores
   .withMessage('Username is required')
   .escape()
   .toLowerCase()
@@ -36,6 +37,7 @@ const validateUserLogIn = [
   // Validate and sanitize password
   body('password')
   .trim()
+  .matches(/^[a-zA-Z0-9_]+$/) //  only alphanumeric characters and underscores
   .notEmpty()
   .withMessage('Password is required')
 
