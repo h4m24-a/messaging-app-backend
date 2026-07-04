@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT;
 const cors = require("cors");
 const passport = require('passport');
 require('./auth/passportJwtConfig');
@@ -75,6 +75,6 @@ app.use(notFoundMiddlware);
 app.use(errorMiddleware);
 
 
-app.listen(PORT, () => {
-  console.log(`Server running on PORT ${PORT}`)
-})
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Server listening on PORT", PORT);
+});
