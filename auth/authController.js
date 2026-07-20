@@ -75,7 +75,8 @@ async function logInUserPost(req, res) {
       httpOnly: true,
       secure: true,                       // Only send over HTTPS. Set to true in production
       maxAge: 7 * 24 * 60 * 60 * 1000,     // 7 days in ms
-      sameSite: 'none'
+      sameSite: 'none',
+      partitioned: true,
     });
     
     res.json({ message: 'Login Successfull', accessToken }); // Send JWT to client

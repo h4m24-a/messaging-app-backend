@@ -18,10 +18,11 @@ async function refreshToken(req, res) {
     const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET_KEY); // Verifying the refresh token to see if its still valid and hasn't been tampered with. If valid, it returns the decoded payload including user id & claims.
 
 
-    // Verify to see if refresh token is valid
+   // Verify to see if refresh token is valid
     const storedToken = await db.getRefreshTokenByUserId(payload.id);
-    if (storedToken != refreshToken) {                                         //     / != returns true if both operands are NOT equal
-      return res.status(403).json({ message: "Invalid refresh token" });
+    if (storedToken != refreshToken) { //     / != returns true if both operands are NOT equal
+      await db.deleteRefreshToken(payload.id)
+      return res.status(403).json({ message: 'Invalid refresh token' })
     }
 
     // Create a new access token with user ID and role from the verified payload
@@ -35,6 +36,12 @@ async function refreshToken(req, res) {
 
 
   } catch (error) {
+    res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    partitioned: true,
+  });
     res.status(403).json({message: 'Invalid or expired refresh token'})
 
   }
