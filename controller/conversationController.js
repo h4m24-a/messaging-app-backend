@@ -6,39 +6,49 @@ const { validationResult } = require("express-validator");
 async function createConversation(req, res) {
   try {
     if (!req.user) {
-      return res.status(401).json({ message: "You are not authorized" });
+      return res.status(401).json({
+        message: "You are not authorized",
+      });
     }
 
     const userA = req.user.id;
     const userB = parseInt(req.body.userBId);
 
     if (!userB) {
-      return res.status(400).json({ message: "userBId is required" });
-    }
-    
-    // 1. Fetch or create the conversation
-    const conversation = await db.getOrCreateConversation(userA, userB);
-
-    // 2. Fetch it back to see if it's ready for this user
-    const result = await db.getConversationByIdForUser(conversation.id, userA);
-
-    // 3. CORRECTED: If it exists, return it with a 200 status, NOT a 500 error!
-    if (result) {
-      return res.json({
-        conversation: result,
-        message: 'Conversation already exists'
+      return res.status(400).json({
+        message: "userBId is required",
       });
     }
 
-    // Fallback if result was somehow empty but conversation was returned
-    res.json({
-      conversation,
-      message: 'Created conversation'
+    const { conversation, alreadyExists } =
+      await db.getOrCreateConversation(userA, userB);
+
+    // Fetch the complete conversation for the response
+    const result = await db.getConversationByIdForUser(
+      conversation.id,
+      userA
+    );
+
+    if (alreadyExists) {
+      return res.json({
+        conversation: result,
+        message: "Conversation already exists",
+        alreadyExists: true,
+      });
+    }
+
+    return res.json({
+      conversation: result,
+      message: "Conversation created",
+      alreadyExists: false,
     });
-    
+
   } catch (error) {
-    console.error('Error creating conversations:', error);
-    res.status(500).json({ error: "Internal server error occurred" });
+    console.error("Error creating conversation:", error);
+
+    return res.status(500).json({
+      error: "Internal server error occurred",
+    });
   }
 }
 

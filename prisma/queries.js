@@ -170,17 +170,13 @@ async function getMessagesInConversation(id, userId) {
   }
 }
 
-
-// Check if convo exists, if not create a conversation
 async function getOrCreateConversation(userA, userB) {
   try {
-    // Normalize order. User1 will be the smallest, user2 would be the biggest
+    // Normalize order
     const user1Id = Math.min(userA, userB);
     const user2Id = Math.max(userA, userB);
 
-
-    
-    // First check if it already exists
+    // Check if it already exists
     const existingConversation = await prisma.conversation.findFirst({
       where: {
         user1Id,
@@ -189,26 +185,30 @@ async function getOrCreateConversation(userA, userB) {
     });
 
     if (existingConversation) {
-      return existingConversation
+      return {
+        conversation: existingConversation,
+        alreadyExists: true,
+      };
     }
-    
 
+    // Create new conversation
+    const conversation = await prisma.conversation.create({
+      data: {
+        user1Id,
+        user2Id,
+      },
+    });
 
-    // If not, create it
-      const conversation = await prisma.conversation.create({
-        data: {
-          user1Id,
-          user2Id,
-        },
-      });
+    return {
+      conversation,
+      alreadyExists: false,
+    };
 
-    return conversation;
   } catch (error) {
     console.error("Error creating conversation", error);
     throw error;
   }
 }
-
 
 
 // Get a specific conversation using conversationId and userId
