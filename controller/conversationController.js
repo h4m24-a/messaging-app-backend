@@ -2,7 +2,6 @@ const db = require('../prisma/queries')
 const { validationResult } = require("express-validator");
 
 
-
 // POST- Create conversation between two users if it doesn't exist
 async function createConversation(req, res) {
   try {
@@ -17,22 +16,29 @@ async function createConversation(req, res) {
       return res.status(400).json({ message: "userBId is required" });
     }
     
-    const conversation = await db.getOrCreateConversation(userA, userB)
+    // 1. Fetch or create the conversation
+    const conversation = await db.getOrCreateConversation(userA, userB);
 
-    const result = await db.getConversationByIdForUser(conversation.id, userA)
+    // 2. Fetch it back to see if it's ready for this user
+    const result = await db.getConversationByIdForUser(conversation.id, userA);
 
+    // 3. CORRECTED: If it exists, return it with a 200 status, NOT a 500 error!
     if (result) {
-      return res.status(500).json({error: 'Conversation already exists'})
+      return res.json({
+        conversation: result,
+        message: 'Conversation already exists'
+      });
     }
 
+    // Fallback if result was somehow empty but conversation was returned
     res.json({
       conversation,
-      message: conversation ? 'Created conversation': 'Conversation already exists'
-    })
+      message: 'Created conversation'
+    });
     
   } catch (error) {
-    console.error('Error creating conversations', error);
-    res.status(500).json({ error: "Conversation already exists" });
+    console.error('Error creating conversations:', error);
+    res.status(500).json({ error: "Internal server error occurred" });
   }
 }
 
