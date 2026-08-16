@@ -19,16 +19,16 @@ async function createConversation(req, res) {
     // 1. Fetch or create the conversation
     const conversation = await db.getOrCreateConversation(userA, userB);
 
-    // 2. Fetch it back to see if it's ready for this user
-    const result = await db.getConversationByIdForUser(conversation.id, userA);
+    // // 2. Fetch it back to see if it's ready for this user
+    // const result = await db.getConversationByIdForUser(conversation.id, userA);
 
-    // 3. CORRECTED: If it exists, return it with a 200 status, NOT a 500 error!
-    if (result) {
-      return res.json({
-        conversation: result,
-        message: 'Conversation already exists'
-      });
-    }
+    // // 3. CORRECTED: If it exists, return it with a 200 status, NOT a 500 error!
+    // if (result) {
+    //   return res.json({
+    //     conversation: result,
+    //     message: 'Conversation already exists'
+    //   });
+    // }
 
     // Fallback if result was somehow empty but conversation was returned
     res.json({
